@@ -1,6 +1,7 @@
-// const fs = require('fs');
-import inquirer from 'inquirer';
-// const generatePage = require('./src/page-template')
+const fs = require('fs');
+const inquirer = require('inquirer');
+const generatePage = templateData;
+
 const promptUser = () => {
     return inquirer.prompt([
         {
@@ -46,14 +47,15 @@ const promptUser = () => {
     ]);
 };
 const promptProject = portfolioData => {
+    console.log(`
+    ======================    
+    Add a new Project
+    ======================
+    `);
+    //if there  is no 'project, array property, create one
     if (!portfolioData.projects) {
         portfolioData.projects = [];
     }
-    console.log(`
-     ======================    
-    Add a new Project
-    ======================
-   `);
     return inquirer.prompt([
         {
             type: 'input',
@@ -128,7 +130,12 @@ const promptProject = portfolioData => {
 promptUser()
     .then(promptProject)
     .then(portfolioData => {
-        console.log(portfolioData);
+        const pageHtml = generatePage(portfolioData);
+        writeFile('./index.html', pageHtml, err => {
+            if(err) throw new Error(err);
+            console.log('Page created! Checkout index.html in this directory to see it!');
+        });
+       
     });
 
 
