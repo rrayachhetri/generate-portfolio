@@ -1,6 +1,6 @@
-const fs = require('fs');
+const{ writeFile, copyFile} = require('./utils/generate-site.js');
 const inquirer = require('inquirer');
-const generatePage = templateData;
+const generatePage = require('./src/page-template');
 
 const promptUser = () => {
     return inquirer.prompt([
@@ -130,14 +130,22 @@ const promptProject = portfolioData => {
 promptUser()
     .then(promptProject)
     .then(portfolioData => {
-        const pageHtml = generatePage(portfolioData);
-        writeFile('./index.html', pageHtml, err => {
-            if(err) throw new Error(err);
-            console.log('Page created! Checkout index.html in this directory to see it!');
-        });
-       
+        return generatePage(portfolioData);
+    })
+    .then(pageHtml => {
+        return writeFile(pageHtml);
+    })
+    .then(writeFileResponse => {
+        console.log(writeFileResponse);
+        return copyFile();
+    })
+    .then(copyFileResponse => {
+        console.log(copyFileResponse);
+    })
+    .catch(err => {
+        console.log(err);
     });
-
+        
 
 
 
